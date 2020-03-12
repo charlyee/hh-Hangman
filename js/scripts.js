@@ -1,66 +1,70 @@
-var _this;
-var maxChances = 6;
+/*********************************
+ * 
+ *  Imports
+ * 
+ *********************************/
+//No imports neccesary 
 
-var gameController = {
+/*********************************
+ * 
+ *  Declare global variables
+ * 
+ *********************************/
+
+//first consts
+const maxChances = 6;
+const gameController = {
     form: document.querySelector('form'),
     input: document.querySelector('[name="guess"]'),
     word: document.querySelector('.word'),
     chances: document.querySelector('.chances'),
     previousGuesses: document.querySelector('.previous-guesses')
 }
+//second lets
+let _this;
+//third vars (but we don't like vars and avoid them if we can)
+
+/*********************************
+ * 
+ *  Declare global classes (functions)
+ * 
+ *********************************/
+//Hangman class has properties and methods within its own scope
 
 function Hangman() {
     //Properties
-    this.runGame = true;
-    this.words = [
+    this.previousGuesses = [];
+    this.chances = maxChances;
+    this.displayString = '';
+    this.wordList = [
         'programming',
         'test',
         'Clayton',
         'TECHCareers'
     ];
     this.word = '';
-    this.displayString = '';
-    this.chances = maxChances;
-    this.previousGuesses = [];
 
     //Methods
     this.run = function () {
-        this.setup();
         _this = this;
+
         //We can add the event listener to the form instead fo the button because the button is type="submit"
         gameController.form.addEventListener('submit', this.guessLetter);
+
+        _this.setup();
+
     };
 
-    this.setup = function () {
-        //Reset the game back to a starting position
-        gameController.previousGuesses.innerHTML = '';
-        this.previousGuesses = [];
-        this.chances = maxChances;
-        this.displayString = '';
-        //Get a new word
-        var i = Math.floor(Math.random() * this.words.length);//The floor() method rounds a number DOWNWARDS to the nearest integer, and returns the result.
-        this.word = this.words[i];
-
-        //How do we display enough empty spaces
-        for (var i = 0; i < this.word.length; i++) this.displayString += '_';//for loops do not need {} braces IF we only have one line of code inside the loop. "this.dislayString += '_';" is actually INSIDE this loop.
-
-        //get our values to show on screen
-        gameController.word.textContent = this.displayString;
-        gameController.chances.textContent = this.chances;
-        //get our values to show in console
-        console.log(this.word);
-    };
-
-    this.guessLetter = function (event) {
+    this.guessLetter = function ( event ) {
         event.preventDefault();
         //Check if the guessed letter is in the word
-        if (_this.word.includes(gameController.input.value)) {
+        if ( _this.word.includes(gameController.input.value )) {
             //Update the display string (showing the letters)
-            for (var i = 0; i < _this.word.length; i++) {
+            for ( var i = 0; i < _this.word.length; i++ ) {
                 //loop through each letter in our word, one-by-one
-                var currentChar = _this.word.substr(i, 1);
+                var currentChar = _this.word.substr( i, 1 );
                 //If the current character matches what we have guessed
-                if (currentChar === gameController.input.value) {
+                if ( currentChar === gameController.input.value ) {
 
                     _this.displayString = //Slice the pieces that we need using .slice() https://www.w3schools.com/jsref/jsref_slice_array.asp
                         _this.displayString.slice(0, i) + //is grabbing all the underscores BEFORE our matched character
@@ -73,7 +77,7 @@ function Hangman() {
             }
 
             //has the word been completely solved?
-            if (!gameController.word.textContent.includes('_')) {
+            if (!gameController.word.textContent.includes( '_' )) {
                 //Win!
                 _this.win();
             }
@@ -85,7 +89,7 @@ function Hangman() {
             gameController.chances.textContent = _this.chances;
 
             //Check for game over
-            if ( _this.chances == 0 ){
+            if (_this.chances == 0) {
                 _this.lose();
             }
         }
@@ -93,16 +97,38 @@ function Hangman() {
         gameController.input.value = '';
     };
 
+    this.setup = function () {
+        //Reset the game back to a starting position
+        gameController.previousGuesses.innerHTML = '';
+        this.previousGuesses = [];
+        this.chances = maxChances;
+        this.displayString = '';
+        //Get a new word
+        var i = Math.floor( Math.random() * this.wordList.length );//The floor() method rounds a number DOWNWARDS to the nearest integer, and returns the result.
+        this.word = this.wordList[ i ];
+
+        //How do we display enough empty spaces
+        for ( var i = 0; i < this.word.length; i++ ) this.displayString += '_';//for loops do not need {} braces IF we only have one line of code inside the loop. "this.dislayString += '_';" is actually INSIDE this loop.
+
+        //get our values to show on screen
+        gameController.word.textContent = this.displayString;
+        gameController.chances.textContent = this.chances;
+        //get our values to show in console
+        console.log( this.word );
+    };
+
+
+
     //Win
     this.win = function () {
-        if ( confirm('You win! Play again?') ) {
+        if ( confirm( 'You win! Play again?' )) {
             this.setup();
         }
     };
 
     //Lose
     this.lose = function () {
-        if ( confirm('You lose! Play again?') ) {
+        if ( confirm( 'You lose! Play again?' )) {
             this.setup();
         }
     };
@@ -111,4 +137,5 @@ function Hangman() {
 
 //END OF FILE
 var game = new Hangman();
+
 game.run();
